@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pull Request #1 — I'm Sorry 🌸</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink: #f7c5d0;
+      --deep-pink: #e8748a;
+      --blush: #fde8ed;
+      --cream: #fff9f5;
+      --text: #3a1a22;
+      --muted: #9e6070;
+      --green: #2ea44f;
+      --border: #f0c8d0;
+    }
+
+    body {
+      background: var(--blush);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px 80px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at 20% 10%, #ffd6e0 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 90%, #ffc2d4 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page { position: relative; z-index: 1; width: 100%; max-width: 740px; }
+
+    /* ── GitHub-style header bar ── */
+    .gh-bar {
+      background: #24292f;
+      border-radius: 10px 10px 0 0;
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: #8b949e;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot.r { background: #ff5f57; }
+    .dot.y { background: #febc2e; }
+    .dot.g { background: #28c840; }
+    .gh-url { margin-left: 8px; color: #8b949e; font-size: 11px; }
+
+    /* ── PR Container ── */
+    .pr-container {
+      background: var(--cream);
+      border: 1.5px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 14px 14px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(180, 80, 100, 0.15);
+    }
+
+    /* PR Title area */
+    .pr-header {
+      padding: 28px 32px 20px;
+      border-bottom: 1.5px solid var(--border);
+    }
+    .pr-title-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .pr-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      color: var(--text);
+      flex: 1;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .badge.open { background: var(--green); color: #fff; }
+    .badge svg { width: 14px; height: 14px; }
+
+    .pr-meta {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .pr-meta strong { color: var(--deep-pink); }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 32px;
+      border-bottom: 1.5px solid var(--border);
+      background: #fff6f8;
+    }
+    .tab {
+      padding: 10px 16px;
+      font-size: 12px;
+      color: var(--muted);
+      cursor: default;
+      border-bottom: 2px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .tab.active {
+      color: var(--text);
+      border-bottom: 2px solid var(--deep-pink);
+      font-weight: 500;
+    }
+    .tab-count {
+      background: var(--pink);
+      color: var(--deep-pink);
+      border-radius: 999px;
+      padding: 1px 6px;
+      font-size: 10px;
+    }
+
+    /* Timeline */
+    .timeline { padding: 28px 32px; display: flex; flex-direction: column; gap: 24px; }
+
+    .event {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      animation: fadeUp 0.6s ease both;
+    }
+    .event:nth-child(1) { animation-delay: 0.1s; }
+    .event:nth-child(2) { animation-delay: 0.3s; }
+    .event:nth-child(3) { animation-delay: 0.5s; }
+    .event:nth-child(4) { animation-delay: 0.7s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--deep-pink), #ffaec0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(232, 116, 138, 0.3);
+    }
+
+    .bubble {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 22px;
+      flex: 1;
+      position: relative;
+    }
+    .bubble::before {
+      content: '';
+      position: absolute;
+      left: -9px;
+      top: 14px;
+      width: 14px;
+      height: 14px;
+      background: #fff;
+      border-left: 1.5px solid var(--border);
+      border-bottom: 1.5px solid var(--border);
+      transform: rotate(45deg);
+    }
+
+    .bubble-meta {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .bubble-meta strong { color: var(--deep-pink); }
+
+    /* The letter card */
+    .letter-card {
+      background: linear-gradient(135deg, #fff0f4 0%, #ffe8ef 100%);
+      border: 1px dashed #f0a0b8;
+      border-radius: 10px;
+      padding: 24px 26px;
+      position: relative;
+      overflow: hidden;
+    }
+    .letter-card::after {
+      content: '♥';
+      position: absolute;
+      right: 18px;
+      top: 14px;
+      font-size: 24px;
+      color: #f7c5d0;
+    }
+
+    .hearts-row { display: flex; gap: 6px; margin-bottom: 14px; font-size: 20px; }
+
+    .letter-body {
+      font-family: 'Lora', serif;
+      font-size: 15px;
+      line-height: 1.85;
+      color: var(--text);
+    }
+    .letter-body p { margin-bottom: 12px; }
+    .letter-body .italic { font-style: italic; color: var(--deep-pink); }
+    .letter-body .sign {
+      margin-top: 20px;
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      font-size: 18px;
+      color: var(--deep-pink);
+      text-align: right;
+    }
+
+    .divider {
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--deep-pink), var(--pink));
+      border-radius: 2px;
+      margin: 16px 0;
+    }
+
+    /* Eid celebration */
+    .eid-card {
+      background: linear-gradient(135deg, #fff8e7, #fff3d0);
+      border: 1.5px solid #f5d06a;
+      border-radius: 10px;
+      padding: 20px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .eid-card::before {
+      content: '🌙';
+      position: absolute;
+      right: 16px;
+      top: 12px;
+      font-size: 28px;
+    }
+    .eid-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 17px;
+      color: #7a5500;
+      margin-bottom: 8px;
+    }
+    .eid-body {
+      font-family: 'Lora', serif;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #5a4000;
+    }
+    .eid-stars { font-size: 16px; letter-spacing: 4px; margin-top: 10px; }
+
+    /* Checks passed */
+    .checks {
+      background: #f0fff4;
+      border: 1.5px solid #a8e6b8;
+      border-radius: 10px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .check-icon { color: var(--green); font-size: 18px; }
+    .check-text { font-size: 13px; color: #1a6632; }
+    .check-text strong { display: block; }
+    .check-text span { font-size: 11px; opacity: 0.8; }
+
+    /* Merge button */
+    .merge-section {
+      margin-top: 4px;
+      display: flex;
+      justify-content: center;
+    }
+    .merge-btn {
+      background: linear-gradient(135deg, var(--deep-pink), #d45070);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 32px;
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(232, 116, 138, 0.4);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .merge-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(232, 116, 138, 0.5);
+    }
+    .merge-btn:active { transform: translateY(0); }
+
+    /* Confetti burst on merge */
+    .confetti-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; }
+    .confetti-piece {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      opacity: 0;
+    }
+    .merged-badge {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      background: #6e40c9;
+      color: white;
+      font-size: 13px;
+      font-family: 'DM Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Browser chrome -->
+  <div class="gh-bar">
+    <div class="dot r"></div>
+    <div class="dot y"></div>
+    <div class="dot g"></div>
+    <span class="gh-url">github.com · Pull Request #1</span>
+  </div>
+
+  <div class="pr-container">
+
+    <!-- PR Header -->
+    <div class="pr-header">
+      <div class="pr-title-row">
+        <span class="badge open">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.251 2.251 0 1 1-1.5 0V5.372A2.25 2.25 0 0 1 1.5 3.25Zm5.677-.177L9.573.677A.25.25 0 0 1 10 .854V2.5h.663c.351 0 .698.09.995.25l-.585 1.178A1.5 1.5 0 0 0 10.5 3.75H10V6h1.5a.75.75 0 0 1 0 1.5H8.75a.75.75 0 0 1 0-1.5H9V3.75A.25.25 0 0 1 9.25 3.5H10v-.25a.25.25 0 0 1 .427-.177l.946.947Z"/></svg>
+          Open
+        </span>
+        <h1 class="pr-title">I'm sorry, my love 💌 — please merge this into your heart</h1>
+      </div>
+      <p class="pr-meta"><strong>him</strong> wants to merge <strong>1 commit</strong> into <strong>your-heart:main</strong> from <strong>him:apology/from-the-bottom-of-my-heart</strong> · opened just now</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active">💬 Conversation <span class="tab-count">2</span></div>
+      <div class="tab">⊙ Commits <span class="tab-count">1</span></div>
+      <div class="tab">✓ Checks <span class="tab-count">1</span></div>
+      <div class="tab">± Files changed <span class="tab-count">1</span></div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline">
+
+      <!-- The letter -->
+      <div class="event">
+        <div class="avatar">🥺</div>
+        <div class="bubble">
+          <div class="bubble-meta"><strong>him</strong> commented · just now</div>
+          <div class="letter-card">
+            <div class="hearts-row">💗 💗 💗</div>
+            <div class="letter-body">
+              <p>My love,</p>
+              <p class="italic">I'm truly sorry for what I did.</p>
+              <p>I hurt you, and I hate that. You deserve so much better, and I promise to do better — for you, for us.</p>
+              <div class="divider"></div>
+              <p class="sign">— yours, always 🌹</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Eid Mubarak -->
+      <div class="event">
+        <div class="avatar">🌙</div>
+        <div class="bubble">
+          <div class="bubble-meta"><strong>him</strong> added a commit · just now &nbsp;·&nbsp; <em>feat: celebrate Eid together</em></div>
+          <div class="eid-card">
+            <div class="eid-title">✨ Eid Mubarak, my love ✨</div>
+            <div class="eid-body">
+              On this blessed occasion of Eid, I want to wish you all the happiness, peace, and joy in the world. May this Eid bring you light and warmth, and may every moment of it be filled with the love you deserve. 🤍
+              <br/><br/>
+              You make every celebration more beautiful just by being in it.
+            </div>
+            <div class="eid-stars">⭐ 🌸 ⭐ 🌸 ⭐</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Checks passed -->
+      <div class="event">
+        <div class="avatar" style="background: linear-gradient(135deg,#2ea44f,#4cbb72)">✓</div>
+        <div class="bubble">
+          <div class="bubble-meta">All checks have passed · just now</div>
+          <div class="checks">
+            <span class="check-icon">✔</span>
+            <div class="check-text">
+              <strong>heart/sincerity — passed</strong>
+              <span>1 successful check — no conflicts with your heart's main branch</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Merge button -->
+      <div class="merge-section" id="mergeSection">
+        <button class="merge-btn" onclick="handleMerge()">
+          🤍 Merge Pull Request — Accept my apology
+        </button>
+        <div class="merged-badge" id="mergedBadge">💜 Merged — Thank you, my love 🌸</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="confetti-wrap" id="confetti"></div>
+
+<script>
+  function handleMerge() {
+    const btn = document.querySelector('.merge-btn');
+    const badge = document.getElementById('mergedBadge');
+    btn.style.display = 'none';
+    badge.style.display = 'flex';
+    spawnConfetti();
+  }
+
+  function spawnConfetti() {
+    const wrap = document.getElementById('confetti');
+    const colors = ['#f7c5d0','#e8748a','#ffd6e0','#ffaec0','#ff8fab','#ffc2d4','#fff0f4','#6e40c9','#2ea44f'];
+    for (let i = 0; i < 80; i++) {
+      const p = document.createElement('div');
+      p.className = 'confetti-piece';
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.top = '-20px';
+      p.style.background = colors[Math.floor(Math.random() * colors.length)];
+      p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      const dur = 1.2 + Math.random() * 1.4;
+      const delay = Math.random() * 0.6;
+      p.style.animation = `fall ${dur}s ${delay}s ease-in forwards`;
+      wrap.appendChild(p);
+      setTimeout(() => p.remove(), (dur + delay) * 1000 + 200);
+    }
+  }
+</script>
+
+<style>
+  @keyframes fall {
+    0%   { opacity: 1; transform: translateY(0) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
+  }
+</style>
+</body>
+</html>
